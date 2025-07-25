@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { getGeoCoding } from "../../utils/api";
 import SearchModal from "./SearchModal";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate()
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -33,7 +35,8 @@ const SearchBar = () => {
     console.log("Selected:", location);
     setShowDropdown(false);
     setQuery(`${location.name}, ${location.country}`);
-    // You can also pass the location to a parent or start fetching weather here
+    const slug = `${location.name.toLowerCase()}-${location.state.toLowerCase()}-${location.country.toLowerCase()}`
+    navigate(`/weather/${slug}`, {viewTransition: true})
   };
 
   return (
