@@ -5,9 +5,13 @@ import Button from '../button/Button'
 import { useNavigate } from 'react-router-dom';
 import authservice from '../../appwrite/auth';
 import { useSelector } from 'react-redux';
+import SearchModal from '../weather/SearchModal';
+import { getGeoCoding } from '../../utils/api';
 
 function Home() {
     const [lookup, setLookup] = useState(() => parseInt(localStorage.getItem("lookup") || '0'));
+    const [geoResults, setGeoResults] = useState([])
+    const [showModal, setShowModal] = useState(false)
 
 
     const isLoggedIn = useSelector((state) => state.auth.status)
@@ -31,18 +35,34 @@ function Home() {
             navigate('/login', { viewTransition: true })
           }
         }else{
-            const updatedLookup = lookup+1
-            setLookup(updatedLookup)
-            localStorage.setItem("lookup", updatedLookup.toString())
-
-            console.log("Call API")
-            setCity('')
+            try {
+              const result = await getGeoCoding(trimmedCity)
+              if(result.length === 0){
+                setError("Not Found");
+              }else{
+                setGeoResults(result)
+                setShowModal(true)
+              }
+            } catch (error) {
+              alert("Something went wrong while fetching city data.")
+            }
         }
+    }
+
+    const handleLocationSelect = (loc) => {
+      const updatedLookup = lookup + 1
+      setLookup(updatedLookup)
+      localStorage.setItem("lookup", updatedLookup.toString())
+      setCity('')
+      setShowModal(false)
+
+      const slug = `${loc.name.toLowerCase()}-${loc.state.toLowerCase()}-${loc.country.toLowerCase()}`
+      navigate(`/weather/${slug}`, { viewTransition: true })
     }
 
   return (
     <div>
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+      <div className="relative z-10 flex flex-col items-center mt-60 min-h-screen px-4">
         <TextType
           text={["Going out!", "or Just Curious", "Check the Weather!"]}
           typingSpeed={60}
@@ -51,10 +71,18 @@ function Home() {
           cursorCharacter="_"
           className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center drop-shadow-lg"
         />
-        <div className='flex flex-row justify-center m-20'>
+        <div className='flex flex-row justify-center mt-20'>
           <Input placeholder="Enter the city...." className="w-96" autoComplete="off" value={city} onChange = {(e) => setCity(e.target.value)}/>
           <Button children={"Check"} className='bg-white/50 hover:bg-white/20 ml-5 p-4 w-40' onClick={handleLookup}/>
         </div>
+          {showModal && (
+          <div className='absolute top-[25%] left-[29%] w-full max-w-md z-10'>
+            <SearchModal
+              loc={geoResults}
+              onSelect={handleLocationSelect}
+            />
+          </div>
+        )}
       </div>
     </div>
   )

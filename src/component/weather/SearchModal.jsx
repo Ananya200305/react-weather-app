@@ -8,7 +8,7 @@ const SearchModal = ({ loc = [], onSelect }) => {
           <li
             key={index}
             onClick={() => onSelect(location)}
-            className="cursor-pointer p-3 text-center bg-white/10 text-white shadow-md rounded-md hover:bg-gray-100 hover:text-black transition"
+            className="cursor-pointer p-3 text-center bg-white/10 text-white shadow-md rounded-full hover:bg-gray-100 hover:text-black transition"
           >
             {location.name}, {location.state ? location.state + ", " : ""}
             {location.country}
