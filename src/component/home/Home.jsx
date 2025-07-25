@@ -4,9 +4,13 @@ import Input from '../input/Input'
 import Button from '../button/Button'
 import { useNavigate } from 'react-router-dom';
 import authservice from '../../appwrite/auth';
+import { useSelector } from 'react-redux';
 
 function Home() {
     const [lookup, setLookup] = useState(() => parseInt(localStorage.getItem("lookup") || '0'));
+
+
+    const isLoggedIn = useSelector((state) => state.auth.status)
 
     const [city, setCity] = useState("")
 
@@ -21,15 +25,11 @@ function Home() {
         }
 
         if(lookup >= 2){
-            try {
-              const userData = await authservice.getCurrentUser()
-              if(userData){
-                navigate('/history', {viewTransition: true})
-              }
-            } catch (error) {
-              navigate('/login', {viewTransition: true})
-            }
-            // navigate('/login', {viewTransition: true})
+          if (isLoggedIn) {
+            navigate('/history', { viewTransition: true })
+          } else {
+            navigate('/login', { viewTransition: true })
+          }
         }else{
             const updatedLookup = lookup+1
             setLookup(updatedLookup)
