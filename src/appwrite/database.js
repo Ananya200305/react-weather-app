@@ -92,6 +92,25 @@ export class DatabaseService {
             throw new Error("Failed to fetch and store weather data.");
         }
     }
+
+    async getUserWeatherHistory() {
+        if (!this.userId) {
+            throw new Error("User ID not set. Use setUserId(userId) before calling this method.");
+        }
+
+        try {
+            const response = await this.databases.listDocuments(this.DB_ID, this.COLLECTION_ID, [
+                Query.equal("user_id", this.userId),
+                Query.orderDesc("$updatedAt"),
+            ]);
+
+            return response.documents;
+        } catch (error) {
+            console.error("Error fetching search history:", error);
+            return [];
+        }
+    }
+
 }
 
 const databaseService = new DatabaseService();
