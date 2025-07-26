@@ -43,6 +43,7 @@ function Home() {
         const slug = `${loc.name.toLowerCase()}-${loc.state?.toLowerCase() || "na"}-${loc.country.toLowerCase()}`;
         
         if (isLoggedIn) {
+            navigate('/history', { replace: true });
             navigate(`/weather/${slug}`, { state: { location: loc }, viewTransition: true });
         } else {
             navigate('/login', { viewTransition: true });
