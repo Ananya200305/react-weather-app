@@ -9,6 +9,7 @@ export function History() {
   const userData = useSelector((state) => state.auth.userData); 
 
   useEffect(() => {
+    if (!userData?.$id) return;
     const fetchHistory = async () => {
       if (userData?.$id) {
         databaseService.setUserId(userData.$id);
@@ -57,9 +58,6 @@ export function History() {
                   />
                 </div>
                 <p>{item.weather_main} - {item.main_temp}°C</p>
-                <p className="text-sm opacity-75">
-                  {new Date(item.$updatedAt).toLocaleString()}
-                </p>
               </div>
             ))
           )}
