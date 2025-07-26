@@ -43,17 +43,22 @@ export const getHourlyWeather = async (lat, lon) => {
             params: {
                 lat,
                 lon,
-                cnt: 8,
+                cnt: 4,
                 appid: conf.openWeatherApi,
                 units: "metric",
             },
         });
-        return res.data
+
+        if (!res.data || !Array.isArray(res.data.list)) {
+            throw new Error("Invalid response structure from hourly forecast.");
+        }
+
+        return res.data;
     } catch (error) {
         console.error("Hourly forecast error:", error);
-        throw new Error("Failed to fetch hourly forecast.");
+        return null;
     }
-}
+};
 
 export const getNoonForecast = async (lat,lon) => {
     try {

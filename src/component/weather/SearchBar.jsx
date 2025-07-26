@@ -35,8 +35,8 @@ const SearchBar = () => {
     console.log("Selected:", location);
     setShowDropdown(false);
     setQuery(`${location.name}, ${location.country}`);
-    const slug = `${location.name.toLowerCase()}-${location.state.toLowerCase()}-${location.country.toLowerCase()}`
-    navigate(`/weather/${slug}`, {viewTransition: true})
+    const slug = `${location.name.toLowerCase()}-${location.state?.toLowerCase() || "na"}-${location.country.toLowerCase()}`
+    navigate(`/weather/${slug}`, {state: {location}, viewTransition: true})
   };
 
   return (
