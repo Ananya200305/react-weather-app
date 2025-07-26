@@ -71,8 +71,8 @@ export class DatabaseService {
                 lat: weatherData.coord.lat,
                 long: weatherData.coord.lon,
                 timestamp: new Date().toISOString(),
-                forecast: JSON.stringify(safeHourlyList).slice(0, 490),
-                dayForecast: JSON.stringify(safeNoonList).slice(0, 490)
+                forecast: JSON.stringify(safeHourlyList),
+                dayForecast: JSON.stringify(safeNoonList)
             }
 
             if (this.userId) {

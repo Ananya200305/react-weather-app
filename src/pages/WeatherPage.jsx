@@ -5,6 +5,8 @@ import { useParams, useLocation } from 'react-router-dom'
 import authservice from '../appwrite/auth'
 import { getBackgroundImg } from '../utils/getBackgroundImg'
 import CurrentForecast from '../component/weather/CurrentForecast'
+import HourlyForecast from '../component/weather/HourlyForecast'
+import AirConditions from '../component/weather/AirConditions'
 
 function WeatherPage() {
   const dispatch = useDispatch()
@@ -54,7 +56,22 @@ function WeatherPage() {
   if (!weather) return null;
 
   return (
-    <div style={{ backgroundImage: `url(${bgImage})` }} className="min-h-screen bg-cover opacity-15">
+    <div className="min-h-screen px-4 py-8 text-white bg-cover bg-center bg-no-repeat relative transition-all duration-700"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        backgroundBlendMode: 'overlay',
+      }}>
+
+        <div className="absolute inset-0 bg-black/50 z-0" />
+        <div className="relative z-10 space-y-8">
+        <CurrentForecast data={weather} />
+        <div className='grid grid-cols-2'>
+          <HourlyForecast data={JSON.parse(weather.forecast)} />
+          <AirConditions data={weather} />
+        </div>
+        {/* <NearbyActivities city={weather.name} /> */}
+    </div>
     </div>
   )
 }
